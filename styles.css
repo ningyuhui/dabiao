@@ -132,6 +132,33 @@ h1 {
   font-size: 15px;
 }
 
+.page-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  width: 100%;
+}
+
+.page-number {
+  min-width: 36px;
+  height: 34px;
+  padding: 0 8px;
+  border: 1px solid #b7c4d2;
+  border-radius: 7px;
+  background: #fff;
+  color: #3d4652;
+  font-size: 15px;
+}
+
+.page-number.active {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #fff;
+  font-weight: 700;
+  cursor: default;
+}
+
 .workspace {
   padding: 26px 32px 88px;
 }
@@ -203,8 +230,11 @@ h1 {
 
 .pager {
   margin-left: auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 10px;
   color: var(--muted);
+  max-width: min(720px, 100%);
 }
 
 .progress-panel {

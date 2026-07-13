@@ -13,6 +13,7 @@ const els = {
   reuploadInput: document.getElementById("reuploadInput"),
   totalCount: document.getElementById("totalCount"),
   pageInfo: document.getElementById("pageInfo"),
+  pageButtons: document.getElementById("pageButtons"),
   prevBtn: document.getElementById("prevBtn"),
   nextBtn: document.getElementById("nextBtn"),
   clearBtn: document.getElementById("clearBtn"),
@@ -188,6 +189,29 @@ function visibleRows() {
   return state.rows.slice(start, end);
 }
 
+function pageButtonRange() {
+  const totalPages = pageCount();
+  const maxVisible = 20;
+  if (totalPages <= maxVisible) {
+    return { first: 0, last: totalPages - 1 };
+  }
+
+  const half = Math.floor(maxVisible / 2);
+  let first = state.currentPage - half;
+  let last = first + maxVisible - 1;
+
+  if (first < 0) {
+    first = 0;
+    last = maxVisible - 1;
+  }
+  if (last >= totalPages) {
+    last = totalPages - 1;
+    first = totalPages - maxVisible;
+  }
+
+  return { first, last };
+}
+
 function renderContent(value) {
   const content = document.createElement("div");
   content.className = "content-box";
@@ -216,6 +240,7 @@ function render() {
 
   if (!hasRows) {
     els.recordBody.innerHTML = "";
+    els.pageButtons.innerHTML = "";
     updateProgress();
     return;
   }
@@ -232,7 +257,25 @@ function render() {
   visibleRows().forEach((row) => {
     els.recordBody.appendChild(renderRow(row));
   });
+  renderPageButtons();
   updateProgress();
+}
+
+function renderPageButtons() {
+  els.pageButtons.innerHTML = "";
+  const totalPages = pageCount();
+  if (!state.rows.length || totalPages <= 1) return;
+
+  const { first, last } = pageButtonRange();
+  for (let page = first; page <= last; page += 1) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `page-number ${page === state.currentPage ? "active" : ""}`;
+    button.textContent = String(page + 1);
+    button.disabled = page === state.currentPage;
+    button.addEventListener("click", () => jumpToPage(page));
+    els.pageButtons.appendChild(button);
+  }
 }
 
 function renderRow(row) {
@@ -323,6 +366,13 @@ function confirmCurrentPageAndNext() {
 function go(delta) {
   if (!state.rows.length) return;
   state.currentPage = Math.max(0, Math.min(state.currentPage + delta, pageCount() - 1));
+  persist();
+  render();
+}
+
+function jumpToPage(page) {
+  if (!state.rows.length) return;
+  state.currentPage = Math.max(0, Math.min(page, pageCount() - 1));
   persist();
   render();
 }
