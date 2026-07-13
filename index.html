@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Excel标注辅助工具 V0.1</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="title-row">
+        <h1>Excel标注辅助工具 V0.1</h1>
+        <span class="mode-pill">使用本地模式</span>
+      </div>
+      <div class="header-actions">
+        <button id="clearBtn" class="danger-btn" type="button">清除数据</button>
+        <button id="exportBtn" class="success-btn" type="button">导出数据</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section id="uploadPanel" class="upload-panel">
+        <label class="upload-box" for="excelInput">
+          <input id="excelInput" type="file" accept=".xlsx,.xls" />
+          <span class="upload-icon">+</span>
+          <strong>上传 Excel 文件</strong>
+          <small>需要包含 id、原始、llm 三列；原始和 llm 可为文本或图片链接</small>
+        </label>
+      </section>
+
+      <section id="toolPanel" class="tool-panel hidden">
+        <div class="meta-row">
+          <span id="totalCount" class="count-pill">总记录数：0</span>
+          <label class="secondary-btn" for="reuploadInput">重新上传</label>
+          <input id="reuploadInput" class="hidden-input" type="file" accept=".xlsx,.xls" />
+          <div class="pager">
+            <button id="prevBtn" class="ghost-btn" type="button">上一页</button>
+            <span id="pageInfo">0 / 0</span>
+            <button id="nextBtn" class="ghost-btn" type="button">下一页</button>
+          </div>
+        </div>
+
+        <div class="progress-panel">
+          <div class="progress-title">
+            <strong>确认进度</strong>
+            <span id="progressText">0/0 (0%)</span>
+          </div>
+          <div class="progress-track">
+            <div id="progressOk" class="progress-ok"></div>
+            <div id="progressNeedsEdit" class="progress-edit"></div>
+          </div>
+          <div class="progress-detail">
+            <span id="unconfirmedText">未确认：0</span>
+            <span id="confirmedText">已确认：0</span>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="label-table">
+            <thead>
+              <tr>
+                <th class="id-col">ID</th>
+                <th>原始</th>
+                <th>LLM <button id="copyLlmBtn" class="inline-copy" type="button">复制本页</button></th>
+                <th>修改结果</th>
+              </tr>
+            </thead>
+            <tbody id="recordBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <div class="sticky-actions">
+      <button id="confirmNextBtn" class="confirm-btn" type="button">确认本页并下一页 (Alt+S)</button>
+    </div>
+
+    <dialog id="previewDialog" class="preview-dialog">
+      <button id="closePreviewBtn" class="close-preview" type="button">×</button>
+      <img id="previewImage" alt="图片预览" />
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
