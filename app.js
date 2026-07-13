@@ -93,7 +93,7 @@ function parseRowsFromSheet(sheet) {
         id: normalizeCell(idIndex >= 0 ? row[idIndex] : "") || String(index + 1),
         original: normalizeCell(row[originalIndex]),
         llm,
-        result: existingResult || llm,
+        result: existingResult,
         status: parseStatus(importedStatus),
       };
     });
